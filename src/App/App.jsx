@@ -15,7 +15,23 @@ export default class App extends Component {
     ],
     filter: "",
   };
+  componentDidMount() {
+    const contacts = localStorage.getItem("contact");
+    const parsedContacts = JSON.parse(contacts);
 
+    if (parsedContacts) {
+      this.setState({ contact: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const nextContact = this.state.contact;
+    const prevContact = prevState.contact;
+
+    if (nextContact !== prevContact) {
+      localStorage.setItem("contact", JSON.stringify(nextContact));
+    }
+  }
   onAddContact = (name, number) => {
     if (this.onCheckContact(name)) {
       alert(`${name} is already in contacts`);
@@ -32,7 +48,7 @@ export default class App extends Component {
   };
   onDeleteContacts = (id) => {
     this.setState((prevState) => ({
-      contact: prevState.contact.filter((el, index) => el.id !== id),
+      contact: prevState.contact.filter((el) => el.id !== id),
     }));
   };
 
